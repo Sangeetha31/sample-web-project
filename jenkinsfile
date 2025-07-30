@@ -30,7 +30,7 @@ pipeline {
                 git url: "${REPO_NAME}", branch: "${BRANCH_NAME}"
             }
         }
-        // doing sast with sonar-qube
+        // doing sast with sonar-qube scanner
         stage('SAST with sonar-scanner'){
             steps{
                 echo 'wait for sonar-scanner to finish'
