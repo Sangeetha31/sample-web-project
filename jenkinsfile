@@ -5,6 +5,7 @@ pipeline {
         SONAR_HOME = 'C:\\Users\\Administrator\\Documents\\tools\\sonar-scanner\\bin'
         REPO_NAME = 'https://github.com/Sangeetha31/sample-web-project.git'
         BRANCH_NAME = 'master'
+        SONAR_TOKEN = credentials('sangu-sonar-project3-token')
     }
 
     stages {
@@ -38,7 +39,7 @@ pipeline {
                    -Dsonar.projectKey=sangu-day3 \
                    -Dsonar.sources=. \
                    -Dsonar.host.url=http://13.203.151.240:9000 \
-                   -Dsonar.token=sqp_5c7b10ff619cddb6ee8996d662dc42e2833774c7
+                   -Dsonar.token=${SONAR_TOKEN}
                 """
             }
         }
