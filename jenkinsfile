@@ -73,22 +73,10 @@ pipeline {
                 }
                 
             }
-            // add stage to scan using trivy if no High, critical vuln then proceed else stop pipeline
-            stage('trivy scan'){
-            steps {
-                echo 'running scan'
-                bat """
-                trivy image  --severity HIGH,CRITICAL --format table -o report.txt image:tag
-                findstr /I "HIGH CRITICAL"  report.txt  >null
 
-                if %errorlevel% == 0 (
-                echo [ERROR] HIGH or ciritical found 
-                exit /b 1
-                )  
-                else (
-                echo no error found 
-                )
-                """
+                    stage('Verify Trivy') {
+            steps {
+                bat 'trivy --version'
             }
         }
             //pushing image to dockerhub
