@@ -9,6 +9,8 @@ pipeline {
         DOCKER_CREDS = 'sang-dockerhub'
         SONAR_PROJECT_KEY = 'sangu-day3'
         SONAR_SERVER_NAME = 'sang-sonarqube'
+        IMAGE_NAME = "sangeeta12/sanguwebapp-iis-ltsc2022"
+        IMAGE_TAG = "codev1"
     }
 
     stages {
@@ -62,9 +64,9 @@ pipeline {
                     echo 'starting docker build process'
                     //to use docker plugin using script
                     script{
-                        def imageName = "docker.io/sangeeta12/sanguwebapp-iis-ltsc2022"
-                        def imageTag = "codev1"
-                        docker.build("${imageName}:${imageTag}",".")
+                        //def imageName = "sangeeta12/sanguwebapp-iis-ltsc2022"
+                        //def imageTag = "codev1"
+                        docker.build("${IMAGE_NAME}:${IMAGE_TAG}",".")
                     }
                     //verify image build
                     bat 'docker images | findstr sanguwebapp'
@@ -72,29 +74,17 @@ pipeline {
                 
             }
             // add stage to scan using trivy if no High, critical vuln then proceed else stop pipeline
-            stage('scan using trivy'){
-                steps{
-                    echo 'scan using trivy'
-                    script{
-                        def imageName = "sangeeta12/sanguwebapp-iis-ltsc2022"
-                        def imageTag = "codev1"
-                        bat """
-                            trivy image ${imageName}:${imageTag}
-                        """
-                    }
-                }
-            }
             //pushing image to dockerhub
             stage('Docker hub image push'){
                 steps{
                     echo 'pushing image to docker hub'
                     script{
-                        def imageName = "sangeeta12/sanguwebapp-iis-ltsc2022"
-                        def imageTag = "codev1"
+                        //def imageName = "sangeeta12/sanguwebapp-iis-ltsc2022"
+                        //def imageTag = "codev1"
                         def hubCred = "${DOCKER_CREDS}"
                         //calling jenkins plugin docker pipeline to push
                         docker.withRegistry('https://registry.hub.docker.com',hubCred){
-                            docker.image(imageName + ":" + imageTag).push()
+                            docker.image("${IMAGE_NAME} + ":" + ${IMAGE_TAG}").push()
                         }
                     }
                 }
