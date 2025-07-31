@@ -78,9 +78,9 @@ pipeline {
             stage('post build security check using trivy'){
                 steps{
                     echo ' doing scan'
-                    bat """
+                    powershell '
                     trivy image --severity HIGH,CRITICAL --format table -o ${TRIVY_REPORT} ${IMAGE_NAME}:${IMAGE_TAG}
-                    """
+                    '
                     
                 }
             }
