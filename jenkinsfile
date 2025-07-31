@@ -71,6 +71,19 @@ pipeline {
                 }
                 
             }
+            // add stage to scan using trivy if no High, critical vuln then proceed else stop pipeline
+            stage('scan using trivy'){
+                steps{
+                    echo 'scan using trivy'
+                    script{
+                        def imageName = "sangeeta12/sanguwebapp-iis-ltsc2022"
+                        def imageTag = "codev1"
+                        bat """
+                            trivy image ${imageName}:${imageTag}
+                        """
+                    }
+                }
+            }
             //pushing image to dockerhub
             stage('Docker hub image push'){
                 steps{
