@@ -78,10 +78,7 @@ pipeline {
             stage('post build security check using trivy'){
                 steps{
                     echo ' doing scan'
-                    powershell '
-                    trivy image --severity HIGH,CRITICAL --format table -o ${TRIVY_REPORT} ${IMAGE_NAME}:${IMAGE_TAG}
-                    '
-                    
+                    pwsh 'trivy image --severity HIGH,CRITICAL --format table -o ${TRIVY_REPORT} ${IMAGE_NAME}:${IMAGE_TAG}'
                 }
             }
             //pushing image to dockerhub
