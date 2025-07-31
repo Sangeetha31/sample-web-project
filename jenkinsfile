@@ -88,7 +88,7 @@ pipeline {
             steps {
                 echo 'Running Trivy scan...'
                 bat """
-                    C:\\Users\\Administrator\\Documents\\tools\\trivy\\trivy.exe image ${IMAGE_NAME}:${IMAGE_TAG}
+                    C:\\Users\\Administrator\\Documents\\tools\\trivy\\trivy.exe image sangeeta12/sanguwebapp-iis-ltsc2022:codev1 
                 """
             }
         }
