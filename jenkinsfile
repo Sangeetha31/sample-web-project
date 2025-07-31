@@ -11,7 +11,7 @@ pipeline {
         SONAR_SERVER_NAME = 'sang-sonarqube'
         IMAGE_NAME = "sangeeta12/sanguwebapp-iis-ltsc2022"
         IMAGE_TAG = "codev1"
-        TRIVY_REPORT = "trivy_report.txt"
+        //TRIVY_REPORT = "trivy_report.txt"
     }
 
     stages {
