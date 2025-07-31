@@ -109,7 +109,7 @@ pipeline {
                         echo trying to remove container with same name
                         docker rm sangappc1 -f >null 2>&1 || echo container not found
                         docker run -itd --name sangappc1 -p 1234:80 ${IMAGE_NAME}:${IMAGE_TAG}
-                        docker ps | findstr
+                        docker ps | findstr sangappc1
                     """
                 }
             }
