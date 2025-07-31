@@ -11,7 +11,7 @@ pipeline {
         SONAR_SERVER_NAME = 'sang-sonarqube'
         IMAGE_NAME = "sangeeta12/sanguwebapp-iis-ltsc2022"
         IMAGE_TAG = "codev1"
-        //TRIVY_REPORT = "trivy_report.txt"
+        TRIVY_REPORT = "trivy_report.txt"
     }
 
     stages {
@@ -88,7 +88,7 @@ pipeline {
             steps {
                 echo 'Running Trivy scan...'
                 bat """
-                    C:\\Users\\Administrator\\Documents\\tools\\trivy\\trivy.exe --version
+                    C:\Users\Administrator\Documents\tools\trivy\trivy.exe image --severity HIGH,CRITICAL --format table -o ${TRIVY_REPORT} ${IAMGE_NAME}:${IMAGE_TAG}
                 """
             }
         }
