@@ -11,7 +11,7 @@ pipeline {
         SONAR_SERVER_NAME = 'sang-sonarqube'
         IMAGE_NAME = "sangeeta12/sanguwebapp-iis-ltsc2022"
         IMAGE_TAG = "codev1"
-        //TRIVY_REPORT = "trivy_report.txt"
+        TRIVY_REPORT = "trivy-sangu-report.txt"
     }
 
     stages {
@@ -44,7 +44,6 @@ pipeline {
             steps{
                 echo 'wait for sonar-scanner to finish'
                 //calling plugin
-
                 script{
                     withSonarQubeEnv("${SONAR_SERVER_NAME}") {
                 
@@ -75,21 +74,13 @@ pipeline {
                 
             }
 
-           // stage('post build security check using trivy'){
-             //   steps{
-              //      echo ' doing scan'
-               //     bat """
-                //    trivy image --severity HIGH,CRITICAL --format table -o ${TRIVY_REPORT} ${IMAGE_NAME}:${IMAGE_TAG}'
-                 //   """
-               // }
-            //}
-
-            stage('trivy scan') {
-            steps {
-                echo 'Running Trivy scan...'
-                bat """
-                    C:\\Users\\Administrator\\Documents\\tools\\trivy\\trivy.exe image sangeeta12/sanguwebapp-iis-ltsc2022:codev1 
-                """
+             // add stage to scan using trivy is no HIgh , critical vuln then proceed else stpo pipeline
+            stage('post build security check using trivy'){
+                steps {
+                    echo "doing scan"
+                    bat """
+                    C:\\Users\\Administrator\\Documents\\tools\\trivy\\trivy.exe image --severity HIGH,CRITICAL --format table  --report summary -o ${TRIVY_REPORT} ${IMAGE_NAME}:${IMAGE_TAG} --skip-version-check
+                    """
             }
         }
             //pushing image to dockerhub
@@ -97,15 +88,28 @@ pipeline {
                 steps{
                     echo 'pushing image to docker hub'
                     script{
-                        def imageName = "sangeeta12/sanguwebapp-iis-ltsc2022"
-                        def imageTag = "codev1"
+                        // def imageName = "sangeeta12/sanguwebapp-iis-ltsc2022"
+                        // def imageTag = "codev1"
                         def hubCred = "${DOCKER_CREDS}"
                         //calling jenkins plugin docker pipeline to push
                         docker.withRegistry('https://registry.hub.docker.com',hubCred){
-                            docker.image(imageName + ":" + imageTag).push()
+                            docker.image("${IMAGE_NAME}" + ":" + "${IMAGE_TAG}").push()
                         }
                     }
                 }
             }
+            //deploy app as container using IIS docker image
+            stage('deploy app using container image'){
+                steps{
+                    echo 'deploying app using container'
+                    bat """
+                        echo trying to remove container with same name
+                        docker rm sangappc1 -f >null 2>&1 || echo container not found
+                        docker run -itd --name sangappc1 -p 1234:80 ${IMAGE_NAME}:${IMAGE_TAG}
+                        docker ps | findstr
+                    """
+                }
+            }
+            //Implement DAST
     }
 }
