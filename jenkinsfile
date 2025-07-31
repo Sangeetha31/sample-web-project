@@ -74,17 +74,34 @@ pipeline {
                 
             }
             // add stage to scan using trivy if no High, critical vuln then proceed else stop pipeline
+            stage('trivy scan'){
+            steps {
+                echo 'running scan'
+                bat """
+                trivy image  --severity HIGH,CRITICAL --format table -o report.txt image:tag
+                findstr /I "HIGH CRITICAL"  report.txt  >null
+
+                if %errorlevel% == 0 (
+                echo [ERROR] HIGH or ciritical found 
+                exit /b 1
+                )  
+                else (
+                echo no error found 
+                )
+                """
+            }
+        }
             //pushing image to dockerhub
             stage('Docker hub image push'){
                 steps{
                     echo 'pushing image to docker hub'
                     script{
-                        //def imageName = "sangeeta12/sanguwebapp-iis-ltsc2022"
-                        //def imageTag = "codev1"
+                        def imageName = "sangeeta12/sanguwebapp-iis-ltsc2022"
+                        def imageTag = "codev1"
                         def hubCred = "${DOCKER_CREDS}"
                         //calling jenkins plugin docker pipeline to push
                         docker.withRegistry('https://registry.hub.docker.com',hubCred){
-                            docker.image("${IMAGE_NAME} + ":" + ${IMAGE_TAG}").push()
+                            docker.image(imageName + ":" + imageTag).push()
                         }
                     }
                 }
