@@ -11,6 +11,7 @@ pipeline {
         SONAR_SERVER_NAME = 'sang-sonarqube'
         IMAGE_NAME = "sangeeta12/sanguwebapp-iis-ltsc2022"
         IMAGE_TAG = "codev1"
+        TRIVY_REPORT = "trivy_report.txt"
     }
 
     stages {
@@ -74,11 +75,15 @@ pipeline {
                 
             }
 
-                    stage('Verify Trivy') {
-            steps {
-                bat 'trivy --version'
+            stage('post build security check using trivy'){
+                steps{
+                    echo ' doing scan'
+                    bat """
+                    trivy image --severity HIGH,CRITICAL --format table -o ${TRIVY_REPORT} ${IMAGE_NAME}:${IMAGE_TAG}
+                    """
+                    
+                }
             }
-        }
             //pushing image to dockerhub
             stage('Docker hub image push'){
                 steps{
