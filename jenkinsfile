@@ -12,6 +12,7 @@ pipeline {
         IMAGE_NAME = "sangeeta12/sanguwebapp-iis-ltsc2022"
         IMAGE_TAG = "codev1"
         TRIVY_REPORT = "trivy-sangu-report.txt"
+        TRIVY_PATH = "C:\\Users\\Administrator\\Documents\\tools\\trivy"
     }
 
     stages {
@@ -79,7 +80,9 @@ pipeline {
                 steps {
                     echo "doing scan"
                     bat """
-                    C:\\Users\\Administrator\\Documents\\tools\\trivy\\trivy.exe image --severity HIGH,CRITICAL --format table  --report summary -o ${TRIVY_REPORT} ${IMAGE_NAME}:${IMAGE_TAG} --skip-version-check
+                    set PATH=%TRIVY_PATH%;%PATH%
+                    echo PATH in Jenkins: %PATH%
+                    trivy image --severity HIGH,CRITICAL --format table  --report summary -o ${TRIVY_REPORT} ${IMAGE_NAME}:${IMAGE_TAG} --skip-version-check
                     """
             }
         }
@@ -110,6 +113,16 @@ pipeline {
                     """
                 }
             }
-            //Implement DAST
+            // //Implement DAST
+            // stage('using zap to do'){
+            //     //only given label agent can run this stage job
+            //     agent{
+            //         label 'sang-win'
+            //     }
+            //     steps{
+            //         echo 'using zap'
+                    
+            //     }
+            // }
     }
 }
