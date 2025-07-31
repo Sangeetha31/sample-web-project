@@ -12,6 +12,8 @@ pipeline {
         IMAGE_NAME = "sangeeta12/sanguwebapp-iis-ltsc2022"
         IMAGE_TAG = "codev1"
         TRIVY_REPORT = "trivy_report.txt"
+        TRIVY_PATH = 'C:\\Users\\Administrator\\Documents\\tools\\trivy'  // Path to your Trivy installation
+        PATH = "${env.PATH};${env.TRIVY_PATH}"
     }
 
     stages {
