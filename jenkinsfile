@@ -113,16 +113,17 @@ pipeline {
                     """
                 }
             }
-            // //Implement DAST
-            // stage('using zap to do'){
-            //     //only given label agent can run this stage job
-            //     agent{
-            //         label 'sang-win'
-            //     }
-            //     steps{
-            //         echo 'using zap'
-                    
-            //     }
-            // }
+            stage('using zap to do '){
+            // only given label agent can run this stage job 
+            agent {
+                label 'sang-linux'
+            }
+            steps {
+                git url: "${REPO_NAME}", branch: "${BRANCH_NAME}"
+                echo 'usinz zap'
+                sh 'docker run -t --rm  ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://172.31.44.127:1234 -I'
+            }
+
+        }
     }
 }
